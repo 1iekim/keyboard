@@ -5,6 +5,7 @@ class Key{
     this.key.innerHTML = keyContent;
     this.key.classList.add('key');
     this.key.classList.add(`key-${keyContent}`);
+    this.key.tabIndex = '-1';
   }
 
   appendTo(conteiner) {
