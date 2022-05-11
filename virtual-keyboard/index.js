@@ -3,11 +3,11 @@ import { capsCollection } from './capsCollection.js'; // eslint-disable-line
 import { shiftCollection } from './shiftCollection.js'; // eslint-disable-line
 
 const ArrkeyCode = [
-  [192, '`'], [49, '1'], [50, '2'], [51, '3'], [52, '4'], [53, '5'], [54, '6'], [55, '7'], [56, '8'], [57, '9'], [48, '0'], [189, '-'], [187, '='], [8, 'Backspace'],
-  [9, 'Tab'], [81, 'q'], [87, 'w'], [69, 'e'], [82, 'r'], [84, 't'], [89, 'y'], [85, 'u'], [73, 'i'], [79, 'o'], [80, 'p'], [219, '['], [221, ']'], [220, '\\'], [46, 'Del'],
-  [20, 'CapsLk'], [65, 'a'], [83, 's'], [68, 'd'], [70, 'f'], [71, 'g'], [72, 'h'], [74, 'j'], [75, 'k'], [76, 'l'], [186, ';'], [222, '\''], [13, 'Enter'],
-  [16, 'Shift'], [90, 'z'], [88, 'x'], [67, 'c'], [86, 'v'], [66, 'b'], [78, 'n'], [77, 'm'], [188, ','], [190, '.'], [191, '/'], [38, '&#9650'], [16, 'Shift'],
-  [17, 'Ctrl'], [91, 'Win'], [18, 'Alt'], [32, 'Space'], [18, 'Alt'], [37, '&#9668'], [40, '&#9660'], [39, '&#9658'], [17, 'Ctrl'],
+  ['Backquote', '`'], ['Digit1', '1'], ['Digit2', '2'], ['Digit3', '3'], ['Digit4', '4'], ['Digit5', '5'], ['Digit6', '6'], ['Digit7', '7'], ['Digit8', '8'], ['Digit9', '9'], ['Digit0', '0'], ['Minus', '-'], ['Equal', '='], ['Backspace', 'Backspace'],
+  ['Tab', 'Tab'], ['KeyQ', 'q'], ['KeyW', 'w'], ['KeyE', 'e'], ['KeyR', 'r'], ['KeyT', 't'], ['KeyY', 'y'], ['KeyU', 'u'], ['KeyI', 'i'], ['KeyO', 'o'], ['KeyP', 'p'], ['BracketLeft', '['], ['BracketRight', ']'], ['Backslash', '\\'], ['Delete', 'Del'],
+  ['CapsLock', 'CapsLk'], ['KeyA', 'a'], ['KeyS', 's'], ['KeyD', 'd'], ['KeyF', 'f'], ['KeyG', 'g'], ['KeyH', 'h'], ['KeyJ', 'j'], ['KeyK', 'k'], ['KeyL', 'l'], ['Semicolon', ';'], ['Quote', '\''], ['Enter', 'Enter'],
+  ['ShiftLeft', 'Shift'], ['KeyZ', 'z'], ['KeyX', 'x'], ['KeyC', 'c'], ['KeyV', 'v'], ['KeyB', 'b'], ['KeyN', 'n'], ['KeyM', 'm'], ['Comma', ','], ['Period', '.'], ['Slash', '/'], ['ArrowUp', '&#9650'], ['ShiftRight', 'Shift'],
+  ['ControlLeft', 'Ctrl'], ['MetaLeft', 'Win'], ['AltLeft', 'Alt'], ['Space', 'Space'], ['AltRight', 'Alt'], ['ArrowLeft', '&#9668'], ['ArrowDown', '&#9660'], ['ArrowRight', '&#9658'], ['ControlRight', 'Ctrl'],
 ];
 
 const body = document.querySelector('body');
@@ -39,13 +39,24 @@ const backspace = document.querySelector('.key-Backspace');
 const del = document.querySelector('.key-Del');
 const caps = document.querySelector('.key-CapsLk');
 const shift = document.querySelectorAll('.key-Shift');
+let isPres = false;
+
+const text1 = document.createElement('p');
+const text2 = document.createElement('p');
+const link = document.createElement('a');
+text1.innerHTML = 'Keyboard created for Windows';
+text2.innerHTML = 'For change language press: (don\'t work yet)';
+link.href = 'https://github.com/1iekim/keyboard/pull/4';
+link.innerHTML = 'PR link';
+
+conteiner.insertAdjacentElement('beforeend', text1);
+conteiner.insertAdjacentElement('beforeend', text2);
+conteiner.insertAdjacentElement('beforeend', link);
 
 // functions
 function keyAction(event) {
   if (event.target.tagName !== 'BUTTON') { return; }
-  // textArea.select();
   let text = event.target.innerHTML;
-  // console.log(event.target.dataset.keyCode);
   if (text === 'Backspace' || text === 'Del' || text === 'CapsLk' || text === 'Shift' || text === 'Ctrl' || text === 'Alt' || text === 'Win') return;
   if (text === 'Enter') text = '\n';
   if (text === 'Space') text = ' ';
@@ -89,29 +100,71 @@ function delAction() {
   }
 }
 
-function capsAction(caps) {
-  const keyCollection = document.querySelectorAll('.key');
-
-  keyCollection.forEach((elem) => {
-    if (capsCollection[elem.innerHTML]) elem.innerHTML = capsCollection[elem.innerHTML];
+function changeText(collection, source) {
+  collection.forEach((key) => {
+    if (source[key.innerHTML]) key.innerHTML = source[key.innerHTML];
   });
-  isCaps = !isCaps;
-  if (isCaps) caps.target.classList.add('pres');
-  if (!isCaps)caps.target.classList.remove('pres');
 }
 
-function shiftAction(key) {
+function capsAction(item) {
   const keyCollection = document.querySelectorAll('.key');
 
-  keyCollection.forEach((elem) => {
-    if (shiftCollection[elem.innerHTML]) elem.innerHTML = shiftCollection[elem.innerHTML];
+  changeText(keyCollection, capsCollection);
 
-  })
+  isCaps = !isCaps;
+  if (isCaps) item.target.classList.add('pres');
+  if (!isCaps) item.target.classList.remove('pres');
+}
+
+function shiftAction() {
+  if (isPres) return;
+  const keyCollection = document.querySelectorAll('.key');
+
+  changeText(keyCollection, shiftCollection);
+}
+
+function objKey() {
+  const keyCollection = document.querySelectorAll('.key');
+  const obj = {};
+  keyCollection.forEach((item) => {
+    obj[item.dataset.keyCode] = item;
+  });
+  return obj;
+}
+
+function pressKey(elem) {
+  const num = elem.code;
+  const obj = objKey();
+  if (elem.key === 'Shift') {
+    shiftAction();
+    isPres = true;
+  }
+  if (elem.key === 'Tab') {
+    textArea.focus();
+  }
+  obj[num].click();
+  if (num !== 'CapsLock') {
+    obj[num].classList.add('pres');
+  }
+}
+
+function upKey(elem) {
+  if (elem.key === 'Shift') {
+    isPres = false;
+    shiftAction();
+  }
+  const obj = objKey();
+  if (elem.code !== 'CapsLock') {
+    setTimeout(() => obj[elem.code].classList.remove('pres'), 100);
+  }
 }
 
 // actions
 textArea.addEventListener('click', () => {
   position = textArea.selectionStart;
+  setTimeout(() => {
+    textArea.blur();
+  }, 10);
 });
 
 keyboard.addEventListener('click', keyAction);
@@ -119,16 +172,9 @@ keyboard.addEventListener('click', keyAction);
 backspace.addEventListener('click', backspaceAction);
 del.addEventListener('click', delAction);
 caps.addEventListener('click', capsAction);
-shift.forEach(elem => elem.addEventListener('mousedown', shiftAction));
-shift.forEach(elem => elem.addEventListener('mouseup', shiftAction));
+shift.forEach((elem) => elem.addEventListener('mousedown', shiftAction));
+shift.forEach((elem) => elem.addEventListener('mouseup', shiftAction));
 
-// document.addEventListener('keypress', function(elem) {
-//   const keyCollection = document.querySelectorAll('.key');
-//   // let num = elem.keyCode;
+document.addEventListener('keydown', pressKey);
 
-//   keyCollection.forEach(item => {
-//       if (+item.dataset.keyCode === +num) {
-//         item.click();
-//       }
-//   })
-// })
+document.addEventListener('keyup', upKey);
