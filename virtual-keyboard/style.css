@@ -1,0 +1,48 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: cursive;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.textarea {
+  width: 820px;
+  height: 150px;
+  margin-bottom: 25px;
+  font-family: cursive;
+}
+
+.keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  width: 820px;
+  margin-bottom: 20px;
+}
+
+.key {
+  width: 50px;
+  height: 50px;
+  font-family: cursive;
+}
+
+.key-Backspace, .key-Enter, .key-Shift, .key-CapsLk {
+  width: 105px;
+}
+
+.key-Space {
+  width: 380px;
+}
+
+.pres {
+  filter: contrast(.6);
+}
+
+p {
+  margin: 0;
+}
